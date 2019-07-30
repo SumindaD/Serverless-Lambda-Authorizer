@@ -1,0 +1,21 @@
+service: serverless-lambda-authorizer
+
+provider:
+  name: aws
+  runtime: python3.7
+
+functions:
+  hello:
+    handler: handler.hello
+    events: # All events associated with this function
+      - http:
+          path: hello
+          method: post
+          authorizer:
+            name: lambdaAuthorizer
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
+
+  lambdaAuthorizer:
+    handler: authorizer.handler
